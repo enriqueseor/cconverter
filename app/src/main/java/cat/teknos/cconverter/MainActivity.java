@@ -12,73 +12,75 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String[] datos = new String[] {"DÓLAR", "EURO", "PESO MEXICANO"};
+    final String[] data = new String[] {"USD", "EUR", "MXN"};
 
-    private Spinner monedaActualSP;
-    private Spinner monedaCambioSP;
-    private EditText valorCambioET;
-    private TextView resultadoTV;
-
-    final private double factorDolarEuro= 0.87;
-    final private double factorPesoDolar= 0.54;
+    private Spinner baseCurrency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayAdapter<String> adaptador = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, datos);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, data);
 
-        monedaActualSP =(Spinner) findViewById(R.id.monedaActualSP);
-        monedaActualSP.setAdapter(adaptador);
+        baseCurrency = findViewById(R.id.baseCurrency);
+        baseCurrency.setAdapter(adapter);
     }
 
-    public void clickConvertir(View v){
+    public void clickExchange(View v){
 
-        monedaActualSP =(Spinner) findViewById(R.id.monedaActualSP);
-        monedaCambioSP =(Spinner) findViewById(R.id.monedaCambioSP);
-        valorCambioET =(EditText) findViewById(R.id.edittxtPerConvertir);
-        resultadoTV =(TextView) findViewById(R.id.txtConvertit);
+        baseCurrency = findViewById(R.id.baseCurrency);
+        Spinner quoteCurrency = findViewById(R.id.quoteCurrency);
+        EditText baseQuantity = findViewById(R.id.baseQuantity);
+        TextView convertedAmount = findViewById(R.id.convertedAmount);
 
-        String monedaActual = monedaActualSP.getSelectedItem().toString();
-        String monedaCambio = monedaCambioSP.getSelectedItem().toString();
+        String monedaActual = baseCurrency.getSelectedItem().toString();
+        String monedaCambio = quoteCurrency.getSelectedItem().toString();
 
-        double valorCambio = Double.parseDouble(valorCambioET.getText().toString());
-        double resultado = procesarConversion(monedaActual,monedaCambio,valorCambio);
+        double valorCambio = Double.parseDouble(baseQuantity.getText().toString());
+        double resultado = exchange(monedaActual,monedaCambio,valorCambio);
 
         if(resultado>0){
-            resultadoTV.setText(String.format("Por %5.2f %s, usted recibirá %5.2f %s",valorCambio,monedaActual,resultado,monedaCambio));
-            valorCambioET.setText("");
+            convertedAmount.setText(String.format("Por %5.2f %s, usted recibirá %5.2f %s",valorCambio,monedaActual,resultado,monedaCambio));
+            baseQuantity.setText("");
 
         }else{
-            resultadoTV.setText(String.format("Usted recibirá"));
+            convertedAmount.setText(String.format("Usted recibirá"));
             Toast.makeText(MainActivity.this, "La opción a elegir no tiene un factor de conversión", Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    private double procesarConversion(String monedaActual, String monedaCambio, double valorCambio){
-        double resultadoConversion =0;
+    private double exchange(String baseCurrency, String quoteCurrency, double lastPrice){
 
-        switch (monedaActual){
+        double convertedAmount = 0;
+        double USDtoEUR = 0.95;
+        double MXNtoUSD = 0.06;
+        double MXNtoEUR = 0.05;
+
+        switch (baseCurrency){
             case "DÓLAR":
-                if(monedaCambio.equals("EURO"))
-                    resultadoConversion = valorCambio * factorDolarEuro;
-
-                if(monedaCambio.equals("PESO MEXICANO"))
-                    resultadoConversion = valorCambio / factorPesoDolar;
+                if(quoteCurrency.equals("EURO"))
+                    convertedAmount = lastPrice * USDtoEUR;
+                if(quoteCurrency.equals("PESO MEXICANO"))
+                    convertedAmount = lastPrice * MXNtoUSD;
                 break;
 
             case "EURO":
-                if(monedaCambio.equals("DÓLAR"))
-                    resultadoConversion = valorCambio / factorDolarEuro;
+                if(quoteCurrency.equals("DÓLAR"))
+                    convertedAmount = lastPrice / USDtoEUR;
+                if(quoteCurrency.equals("PESO MEXICANO"))
+                    convertedAmount = lastPrice * USDtoEUR;
+
                 break;
 
             case "PESO MEXICANO":
-                if(monedaCambio.equals("DÓLAR"))
-                    resultadoConversion = valorCambio * factorPesoDolar;
+                if(quoteCurrency.equals("DÓLAR"))
+                    convertedAmount = lastPrice / MXNtoUSD;
+                if(quoteCurrency.equals("EURO"))
+                    convertedAmount = lastPrice / MXNtoEUR;
                 break;
         }
-        return resultadoConversion;
+        return convertedAmount;
     }
 }
