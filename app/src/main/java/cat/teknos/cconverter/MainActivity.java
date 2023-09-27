@@ -38,16 +38,13 @@ public class MainActivity extends AppCompatActivity {
         String monedaCambio = quoteCurrency.getSelectedItem().toString();
 
         double valorCambio = Double.parseDouble(baseQuantity.getText().toString());
-        double resultado = exchange(monedaActual,monedaCambio,valorCambio);
+        double result = exchange(monedaActual,monedaCambio,valorCambio);
 
-        if(resultado>0){
-            convertedAmount.setText(String.format("Por %5.2f %s, usted recibirá %5.2f %s",valorCambio,monedaActual,resultado,monedaCambio));
+        if(result > 0){
+            convertedAmount.setText(String.format("Por %5.2f %s, usted recibirá %5.2f %s",valorCambio,monedaActual,result,monedaCambio));
             baseQuantity.setText("");
-
         }else{
-            convertedAmount.setText(String.format("Usted recibirá"));
             Toast.makeText(MainActivity.this, "La opción a elegir no tiene un factor de conversión", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -59,26 +56,26 @@ public class MainActivity extends AppCompatActivity {
         double MXNtoEUR = 0.05;
 
         switch (baseCurrency){
-            case "DÓLAR":
-                if(quoteCurrency.equals("EURO"))
+            case "USD":
+                if(quoteCurrency.equals("EUR"))
                     convertedAmount = lastPrice * USDtoEUR;
-                if(quoteCurrency.equals("PESO MEXICANO"))
-                    convertedAmount = lastPrice * MXNtoUSD;
-                break;
-
-            case "EURO":
-                if(quoteCurrency.equals("DÓLAR"))
-                    convertedAmount = lastPrice / USDtoEUR;
-                if(quoteCurrency.equals("PESO MEXICANO"))
-                    convertedAmount = lastPrice * USDtoEUR;
-
-                break;
-
-            case "PESO MEXICANO":
-                if(quoteCurrency.equals("DÓLAR"))
+                if(quoteCurrency.equals("MXN"))
                     convertedAmount = lastPrice / MXNtoUSD;
-                if(quoteCurrency.equals("EURO"))
+                break;
+
+            case "EUR":
+                if(quoteCurrency.equals("USD"))
+                    convertedAmount = lastPrice / USDtoEUR;
+                if(quoteCurrency.equals("MXN"))
                     convertedAmount = lastPrice / MXNtoEUR;
+
+                break;
+
+            case "MXN":
+                if(quoteCurrency.equals("USD"))
+                    convertedAmount = lastPrice * MXNtoUSD;
+                if(quoteCurrency.equals("EUR"))
+                    convertedAmount = lastPrice * MXNtoEUR;
                 break;
         }
         return convertedAmount;
