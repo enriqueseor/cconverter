@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "cconverter"
+rootProject.name = "cConverter"
 include(":app")
