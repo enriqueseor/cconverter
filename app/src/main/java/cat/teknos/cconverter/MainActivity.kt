@@ -1,7 +1,7 @@
 package cat.teknos.cconverter
 
 import android.os.Bundle
-import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
@@ -13,33 +13,37 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        setupClickListeners()
     }
 
-    fun clickExchange(v: View?) {
-        val SpnBaseCurrency = findViewById<Spinner>(R.id.SpnBaseCurrency)
-        val SpnQuoteCurrency = findViewById<Spinner>(R.id.SpnQuoteCurrency)
-        val baseQuantity = findViewById<EditText>(R.id.baseQuantity)
-        val convertedAmount = findViewById<TextView>(R.id.convertedAmount)
-        val BaseCoin = SpnBaseCurrency.selectedItem.toString()
-        val QuoteCoin = SpnQuoteCurrency.selectedItem.toString()
-        val changeValue = baseQuantity.text.toString().toDouble()
-        val result = exchange(BaseCoin, QuoteCoin, changeValue)
-        if (result > 0) {
-            convertedAmount.text = String.format(
-                Locale.US,
-                "For %5.2f %s, you will receive %5.2f %s",
-                changeValue,
-                BaseCoin,
-                result,
-                QuoteCoin
-            )
-            baseQuantity.setText("")
-        } else {
-            Toast.makeText(
-                this@MainActivity,
-                "This option has not an exchange value",
-                Toast.LENGTH_SHORT
-            ).show()
+    private fun setupClickListeners() {
+        findViewById<Button>(R.id.btnCalculate).setOnClickListener {
+            val spnBaseCurrency = findViewById<Spinner>(R.id.SpnBaseCurrency)
+            val spnQuoteCurrency = findViewById<Spinner>(R.id.SpnQuoteCurrency)
+            val baseQuantity = findViewById<EditText>(R.id.baseQuantity)
+            val convertedAmount = findViewById<TextView>(R.id.convertedAmount)
+            val baseCoin = spnBaseCurrency.selectedItem.toString()
+            val quoteCoin = spnQuoteCurrency.selectedItem.toString()
+            val changeValue = baseQuantity.text.toString().toDouble()
+            val result = exchange(baseCoin, quoteCoin, changeValue)
+            if (result > 0) {
+                convertedAmount.text = String.format(
+                    Locale.US,
+                    "For %5.2f %s, you will receive %5.2f %s",
+                    changeValue,
+                    baseCoin,
+                    result,
+                    quoteCoin
+                )
+                baseQuantity.setText("")
+            } else {
+                Toast.makeText(
+                    this@MainActivity,
+                    "This option has not an exchange value",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
