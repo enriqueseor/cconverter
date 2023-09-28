@@ -2,7 +2,6 @@ package cat.teknos.cconverter;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -10,41 +9,34 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
-
-    final String[] data = new String[] {"USD", "EUR", "MXN"};
-
-    private Spinner baseCurrency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, data);
-
-        baseCurrency = findViewById(R.id.baseCurrency);
-        baseCurrency.setAdapter(adapter);
     }
 
     public void clickExchange(View v){
 
-        baseCurrency = findViewById(R.id.baseCurrency);
-        Spinner quoteCurrency = findViewById(R.id.quoteCurrency);
+        Spinner SpnBaseCurrency = findViewById(R.id.SpnBaseCurrency);
+        Spinner SpnQuoteCurrency = findViewById(R.id.SpnQuoteCurrency);
         EditText baseQuantity = findViewById(R.id.baseQuantity);
         TextView convertedAmount = findViewById(R.id.convertedAmount);
 
-        String monedaActual = baseCurrency.getSelectedItem().toString();
-        String monedaCambio = quoteCurrency.getSelectedItem().toString();
+        String BaseCoin = SpnBaseCurrency.getSelectedItem().toString();
+        String QuoteCoin = SpnQuoteCurrency.getSelectedItem().toString();
 
-        double valorCambio = Double.parseDouble(baseQuantity.getText().toString());
-        double result = exchange(monedaActual,monedaCambio,valorCambio);
+        double changeValue = Double.parseDouble(baseQuantity.getText().toString());
+        double result = exchange(BaseCoin,QuoteCoin,changeValue);
 
         if(result > 0){
-            convertedAmount.setText(String.format("Por %5.2f %s, usted recibirá %5.2f %s",valorCambio,monedaActual,result,monedaCambio));
+            convertedAmount.setText(String.format(Locale.US, "For %5.2f %s, you will receive %5.2f %s",changeValue,BaseCoin,result,QuoteCoin));
             baseQuantity.setText("");
         }else{
-            Toast.makeText(MainActivity.this, "La opción a elegir no tiene un factor de conversión", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "This option has not an exchange value", Toast.LENGTH_SHORT).show();
         }
     }
 

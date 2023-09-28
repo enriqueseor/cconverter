@@ -35,7 +35,7 @@
             tools:ignore="Autofill,LabelFor" />
 
         <Spinner
-            android:id="@+id/baseCurrency"
+            android:id="@+id/SpnBaseCurrency"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:entries="@array/coins"
@@ -56,12 +56,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/baseCurrency"
+            app:layout_constraintTop_toBottomOf="@+id/SpnBaseCurrency"
             app:layout_constraintVertical_bias="0.1"
             tools:ignore="HardcodedText" />
 
         <Spinner
-            android:id="@+id/quoteCurrency"
+            android:id="@+id/SpnQuoteCurrency"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:entries="@array/coins"
@@ -80,7 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/quoteCurrency"
+            app:layout_constraintTop_toBottomOf="@+id/SpnQuoteCurrency"
             app:layout_constraintVertical_bias="0.1" />
 
         <Button
