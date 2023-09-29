@@ -12,9 +12,9 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
     private val exchangeRates = mapOf(
-        Pair("USD", mapOf("EUR" to 0.95, "MXN" to 0.06)),
-        Pair("EUR", mapOf("USD" to 1.05, "MXN" to 0.06)),
-        Pair("MXN", mapOf("USD" to 16.67, "EUR" to 16.67))
+        Pair("USD", mapOf("EUR" to 0.9444, "MXN" to 17.3692)),
+        Pair("EUR", mapOf("USD" to 1.0589, "MXN" to 18.3937)),
+        Pair("MXN", mapOf("USD" to 0.0576, "EUR" to 0.0544))
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +44,9 @@ class MainActivity : AppCompatActivity() {
                         convertedAmount.text = String.format(
                             Locale.US,
                             "%.2f %s",
-                            changeValue,
-                            baseCoin,
                             result,
                             quoteCoin
                         )
-                        baseQuantity.setText("")
                     } else {
                         Toast.makeText(
                             this@MainActivity,
