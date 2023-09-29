@@ -10,6 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
+
+    private val exchangeRates = mapOf(
+        Pair("USD", mapOf("EUR" to 0.95, "MXN" to 0.06)),
+        Pair("EUR", mapOf("USD" to 1.05, "MXN" to 0.06)),
+        Pair("MXN", mapOf("USD" to 16.67, "EUR" to 16.67))
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,24 +30,44 @@ class MainActivity : AppCompatActivity() {
             val spnQuoteCurrency = findViewById<Spinner>(R.id.SpnQuoteCurrency)
             val baseQuantity = findViewById<EditText>(R.id.baseQuantity)
             val convertedAmount = findViewById<TextView>(R.id.convertedAmount)
+
             val baseCoin = spnBaseCurrency.selectedItem.toString()
             val quoteCoin = spnQuoteCurrency.selectedItem.toString()
-            val changeValue = baseQuantity.text.toString().toDouble()
-            val result = exchange(baseCoin, quoteCoin, changeValue)
-            if (result > 0) {
-                convertedAmount.text = String.format(
-                    Locale.US,
-                    "For %5.2f %s, you will receive %5.2f %s",
-                    changeValue,
-                    baseCoin,
-                    result,
-                    quoteCoin
-                )
-                baseQuantity.setText("")
+            val changeValueText = baseQuantity.text.toString()
+
+            if (changeValueText.isNotBlank()) {
+                try {
+                    val changeValue = changeValueText.toDouble()
+                    val result = exchange(baseCoin, quoteCoin, changeValue)
+
+                    if (result > 0) {
+                        convertedAmount.text = String.format(
+                            Locale.US,
+                            "%.2f %s",
+                            changeValue,
+                            baseCoin,
+                            result,
+                            quoteCoin
+                        )
+                        baseQuantity.setText("")
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "This option does not have an exchange value",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Invalid input. Please enter a valid number.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             } else {
                 Toast.makeText(
                     this@MainActivity,
-                    "This option has not an exchange value",
+                    "Please enter a quantity to convert.",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -48,26 +75,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun exchange(baseCurrency: String, quoteCurrency: String, lastPrice: Double): Double {
-        var convertedAmount = 0.0
-        val USDtoEUR = 0.95
-        val MXNtoUSD = 0.06
-        val MXNtoEUR = 0.05
-        when (baseCurrency) {
-            "USD" -> {
-                if (quoteCurrency == "EUR") convertedAmount = lastPrice * USDtoEUR
-                if (quoteCurrency == "MXN") convertedAmount = lastPrice / MXNtoUSD
+        return exchangeRates[baseCurrency]?.get(quoteCurrency)?.let {
+            if (it > 0) {
+                lastPrice * it
+            } else {
+                -1.0
             }
-
-            "EUR" -> {
-                if (quoteCurrency == "USD") convertedAmount = lastPrice / USDtoEUR
-                if (quoteCurrency == "MXN") convertedAmount = lastPrice / MXNtoEUR
-            }
-
-            "MXN" -> {
-                if (quoteCurrency == "USD") convertedAmount = lastPrice * MXNtoUSD
-                if (quoteCurrency == "EUR") convertedAmount = lastPrice * MXNtoEUR
-            }
-        }
-        return convertedAmount
+        } ?: -1.0
     }
 }
