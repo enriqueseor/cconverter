@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:foregroundTint="#000000"
-    tools:context="cat.teknos.cconverter.MainActivity">
+    tools:context="cat.teknos.cconverter.view.MainActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"

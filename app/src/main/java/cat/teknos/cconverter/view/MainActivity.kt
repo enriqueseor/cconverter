@@ -1,4 +1,4 @@
-package cat.teknos.cconverter
+package cat.teknos.cconverter.view
 
 import android.os.Bundle
 import android.widget.Button
@@ -7,6 +7,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cat.teknos.cconverter.R
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
